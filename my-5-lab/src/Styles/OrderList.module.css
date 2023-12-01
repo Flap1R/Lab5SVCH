@@ -1,0 +1,11 @@
+.orderList {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-bottom: 15px;
+}
+
+.emptyList {
+    padding-left: 10px;
+}
