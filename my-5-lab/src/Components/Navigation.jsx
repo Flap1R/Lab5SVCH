@@ -7,10 +7,13 @@ const Navigation = () => {
     return (
         <nav className={classes.navigation}>
             <Link to="/orders" className={classes.navigationLink}>
-                All orders
+                Main
             </Link>
-            <Link to="/orders/create" className={classes.navigationLink}>
-                Create order
+            <Link to="/orders/categories" className={classes.navigationLink}>
+                Categories
+            </Link>
+            <Link to="/orders/profile" className={classes.navigationLink}>
+                Profile
             </Link>
         </nav>
     );

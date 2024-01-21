@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import OrdersPage from "../Pages/OrdersPage";
-import OrderCreationPage from "../Pages/OrderCreationPage";
+import OrderCategoriesPage from "../Pages/OrderCategoriesPage";
 import OrderEditionPage from "../Pages/OrderEditionPage";
+import OrderProfilePage from "../Pages/OrderProfilePage";
 
 const App = () => {
     const [orders, setOrders] = useState([]);
@@ -10,7 +11,7 @@ const App = () => {
     useEffect(() => {
         loadOrders();
     }, []);
-
+    
     const loadOrders = async () => {
         const response = await fetch("./orders.json");
         const data = await response.json();
@@ -18,7 +19,7 @@ const App = () => {
         setOrders(data.orders);
     };
 
-    const createOrder = (orderData) => {
+    const categoriesOrder = (orderData) => {
         var maxId;
 
         if (orders && orders.length > 0) {
@@ -45,11 +46,36 @@ const App = () => {
         orders[index] = editedOrder;
     };
 
+    const profileOrder = (orderData) => {
+        var maxId;
+
+        if (orders && orders.length > 0) {
+            maxId = Math.max(...orders.map((order) => order.id));
+        } else {
+            maxId = 0;
+        }
+
+        const order = {
+            id: maxId + 1,
+            ...orderData,
+            creationDate: new Date().toISOString().split("T")[0],
+        };
+
+        setOrders([...orders, order]);
+    };
+      
     return (
         <Routes>
             <Route
-                path="/orders/create"
-                element={<OrderCreationPage creationHandler={createOrder} />}
+                path="/orders/profile"
+                element={
+                    <OrderProfilePage orders={orders} profileHandler={profileOrder} />
+                }
+            />
+            <Route path="*" element={<Navigate to="/orders" replace />} />
+            <Route
+                path="/orders/categories"
+                element={<OrderCategoriesPage categoriesHandler={categoriesOrder} />}
             />
             <Route
                 path="/orders/edit/:id"

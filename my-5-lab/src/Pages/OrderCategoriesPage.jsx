@@ -3,18 +3,19 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import OrderForm from "../Components/UI/OrderForm/OrderForm";
 
-import classes from "../Styles/OrderCreationPage.module.css";
+import classes from "../Styles/OrderCategoriesPage.module.css";
 
-const OrderCreationPage = ({ creationHandler }) => {
+const OrderCategoriesPage = ({ categoriesHandler }) => {
+
     return (
-        <div className={classes.orderCreationPage}>
+        <div className={classes.orderCategoriesPage}>
             <Header />
             <main className={classes.main}>
-                <OrderForm submitHandler={creationHandler}>Create</OrderForm>
+                <OrderForm submitHandler={categoriesHandler}>Add Categories</OrderForm>
             </main>
             <Footer />
         </div>
     );
 };
 
-export default OrderCreationPage;
+export default OrderCategoriesPage;

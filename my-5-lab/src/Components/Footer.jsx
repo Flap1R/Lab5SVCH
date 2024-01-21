@@ -13,7 +13,7 @@ const Footer = () => {
             >
                 GitHub
             </a>
-            <span className={classes.footerText}>&copy; 2023</span>
+            <span className={classes.footerText}>&copy; 2023 | Ivan Samolazov</span>
         </footer>
     );
 };

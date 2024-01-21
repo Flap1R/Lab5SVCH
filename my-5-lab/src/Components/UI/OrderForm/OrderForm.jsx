@@ -34,9 +34,15 @@ const OrderForm = ({ children, orderData, submitHandler }) => {
         router("/orders");
     };
 
+    const routeToRouter = (e) => {
+        e.preventDefault();
+
+        router("/orders");
+    };
+
     return (
         <form className={classes.form}>
-            <h2 className={classes.formHeader}>{children} order</h2>
+            <h2 className={classes.formHeader}>{children}</h2>
             <div className={classes.inputs}>
                 <Input
                     type="text"
@@ -80,6 +86,7 @@ const OrderForm = ({ children, orderData, submitHandler }) => {
                 />
             </div>
             <Button onClick={submit}>{children}</Button>
+            <Button onClick={routeToRouter}>Cancel</Button>
         </form>
     );
 };
