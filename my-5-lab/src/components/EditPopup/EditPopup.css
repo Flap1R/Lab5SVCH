@@ -1,0 +1,82 @@
+.editPopup .popupWindow {
+  height: 20vw;
+  width: 27vw;
+  margin-top: 15vw;
+  box-shadow: 0 .2vw 1vw 0 rgba(0, 0, 0, 0.16);
+  background-color: #d1ce8c;
+}
+
+@media (max-width: 1066px) {
+  .editPopup .popupWindow {
+    height: 20vw;
+  }
+}
+
+@media (max-width: 740px) {
+  .editPopup .popupWindow {
+    height: 23vw;
+  }
+}
+
+@media (max-width: 496px) {
+  .editPopup .popupWindow {
+    height: 25vw;
+  }
+}
+
+@media (max-width: 470px) {
+  .editPopup .popupWindow {
+    height: 28vw;
+  }
+}
+
+@media (max-width: 429px) {
+  .editPopup .popupWindow {
+    height: 30vw;
+  }
+}
+
+@media (max-width: 371px) {
+  .editPopup .popupWindow {
+    height: 32vw;
+  }
+}
+
+@media (max-width: 335px) {
+  .editPopup .popupWindow {
+    height: 34vw;
+  }
+}
+
+.editPopup__content {
+  margin: 1vw;
+}
+
+.editPopup__content__title {
+  font-size: 2.5vw;
+  margin-bottom: 1vw;
+}
+
+.editPopup__content__buttons {
+  margin-top: 2vw;
+}
+
+.editPopup__content__buttons .css-sghohy-MuiButtonBase-root-MuiButton-root {
+  width: 5.5vw;
+  height: 1.7vw;
+  font-size: 0.7vw;
+  background-color: #1e5327;
+}
+
+@media (max-width: 470px) {
+  .editPopup__content__buttons .css-1d9bq45-MuiButtonGroup-root {
+    display: flex;
+    flex-direction: column;
+    box-shadow: none;
+  }
+
+  .editPopup__content__buttons .css-sghohy-MuiButtonBase-root-MuiButton-root {
+    border: none;
+    border-radius: 0;
+  }
+}

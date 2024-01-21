@@ -1,0 +1,15 @@
+.input__title {
+    font-size: 1.2vw;
+  }
+  
+  .MuiInput-root{
+    margin-right: 0;
+    margin-left: auto;
+    font-size: 1vw !important;
+  }
+  
+  .input {
+    margin-bottom: 1vw;
+    display: flex;
+    flex-direction: row;
+}
