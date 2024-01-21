@@ -8,19 +8,19 @@ import { ServicesBlock } from '../../components/ServicesBlock/ServicesBlock';
 import { ButtonColor } from '../../components/Button/Button';
 import { EditPopup } from '../../components/EditPopup/EditPopup';
 import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLastBreadcrumb';
+import { setJsonData } from '../../data/actions';
+import { useSelector, useDispatch } from 'react-redux';
 
 export function ServicesPage() {
-  const [data, setData] = useState();
   const [showPopup, setShowPopup] = useState(false);
   const [targetElement, setTargetElement] = useState([]);
 
-  useEffect(() => {
-    loadData();
-  }, [])
+  const dispatch = useDispatch();
+   const data = useSelector((state) => state.jsonData);
 
-  async function loadData() {
-    setData(jsonData);
-  }
+   useEffect(() => {
+     dispatch(setJsonData(jsonData));
+   }, [dispatch]);
 
   function openPopup(element) {
     setTargetElement(element);
@@ -40,9 +40,6 @@ export function ServicesPage() {
     }
 
     setTargetElement(targetElement);
-
-    data.push(targetElement);
-    console.log(data);
     setShowPopup(true);
   }
 
@@ -53,7 +50,7 @@ export function ServicesPage() {
         <ActiveLastBreadcrumb targetPage="Услуги" />
         <div className='servicesPage__title'>Услуги</div>
 
-        {data && data.map(element =>
+        {data.jsonData && data.jsonData.map(element =>
           <ServicesBlock key={element.id} services={element.services} onClick={() => openPopup(element)} />
         )}
 

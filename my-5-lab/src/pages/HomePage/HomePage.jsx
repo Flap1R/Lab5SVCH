@@ -2,27 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { Head } from '../../components/Head/Head';
 import { Footer } from '../../components/Footer/Footer';
 import { Content } from '../../components/Content/Content';
-import jsonData from '../../data/data.json';
 import { HomeBlock } from '../../components/HomeBlock/HomeBlock';
 import './HomePage.css';
 import { EditPopup } from '../../components/EditPopup/EditPopup';
 import { ButtonColor } from '../../components/Button/Button';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLastBreadcrumb';
+import { setJsonData } from '../../data/actions';
+import jsonData from '../../data/data.json';
+import { useDispatch, useSelector } from 'react-redux';
 
-export function HomePage() {
-  const [data, setData] = useState();
-  const [showPopup, setShowPopup] = useState(false);
+export function HomePage() {  
   const [targetElement, setTargetElement] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const dispatch = useDispatch();
+  const localData = useSelector((state) => state.jsonData);
 
   useEffect(() => {
-    loadData();
-  }, [])
-
-  async function loadData() {
-    setData(jsonData);
-  }
+    dispatch(setJsonData(jsonData));
+  }, []);
 
   function openPopup(element) {
     setTargetElement(element);
@@ -39,13 +39,9 @@ export function HomePage() {
       home: "default",
       services: "default",
       objects: "default"
-    }
+    };
 
     setTargetElement(targetElement);
-
-    data.push(targetElement);
-    console.log(data);
-    setShowPopup(true);
     setOpenSnackbar(true);
   }
 
@@ -56,7 +52,7 @@ export function HomePage() {
         <ActiveLastBreadcrumb targetPage="Главная"/>
         <div className='homePage__title'>Компании и услуги</div>
         {
-          data && data.map(element =>
+           localData.jsonData && localData.jsonData.map(element =>
             <HomeBlock key={element.id} element={element} onClick={() => openPopup(element)} />
           )
         }

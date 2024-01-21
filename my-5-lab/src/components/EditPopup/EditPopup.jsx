@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { PopupWindow } from '../PopupWindow/PopupWindow';
 import './EditPopup.css';
 import { Input } from '../Input/Input';
-
 import jsonData from '../../data/data.json';
 import { ButtonsGroup } from '../ButtonsGroup/ButtonsGroup';
 
@@ -54,7 +53,7 @@ export function EditPopup(props) {
           <div className='editPopup__content__home'>
             {home && <Input title="Главная" value={home} onChange={(value) => setHome(value)} />}
           </div>
-
+        
           <div className='editPopup__content__services'>
             {services && <Input title="Услуги" value={services} onChange={(value) => setServices(value)} />}
           </div>

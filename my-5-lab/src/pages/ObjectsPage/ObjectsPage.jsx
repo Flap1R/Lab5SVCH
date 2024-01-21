@@ -8,19 +8,19 @@ import { ObjectsBlock } from '../../components/ObjectsBlock/ObjectsBlock';
 import { EditPopup } from '../../components/EditPopup/EditPopup';
 import { ButtonColor } from '../../components/Button/Button';
 import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLastBreadcrumb';
+import { setJsonData } from '../../data/actions';
+import { useSelector, useDispatch } from 'react-redux';
 
 export function ObjectsPage() {
-  const [data, setData] = useState();
   const [showPopup, setShowPopup] = useState(false);
   const [targetElement, setTargetElement] = useState([]);
 
-  useEffect(() => {
-    loadData();
-  }, [])
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.jsonData);
 
-  async function loadData() {
-    setData(jsonData);
-  }
+  useEffect(() => {
+    dispatch(setJsonData(jsonData));
+  }, [dispatch]);
 
   function openPopup(element) {
     setTargetElement(element);
@@ -40,9 +40,6 @@ export function ObjectsPage() {
     }
 
     setTargetElement(targetElement);
-
-    data.push(targetElement);
-    console.log(data);
     setShowPopup(true);
   }
 
@@ -53,7 +50,7 @@ export function ObjectsPage() {
         <ActiveLastBreadcrumb targetPage="Объекты" />
         <div className='objectsPage__title'>Объекты</div>
 
-        {data && data.map(element =>
+        {data.jsonData && data.jsonData.map(element =>
           <ObjectsBlock key={element.id} objects={element.objects} services={element.services} onClick={() => openPopup(element)} />
         )}
 
