@@ -11,6 +11,14 @@ export function Footer() {
       <div className='footer__contacts'>
         <div>Email: notarycompany@gmail.com</div>
         <div>Телефон: +375 33 444 55 66</div>
+        <a
+        className='footerLink'
+        href='https://github.com/flap1r'
+        target='_blank'
+        rel='noreferrer'
+      >
+        GitHub
+      </a>
       </div>
     </div>
   );
