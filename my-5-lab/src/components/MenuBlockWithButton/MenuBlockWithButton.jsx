@@ -27,6 +27,13 @@ export function MenuBlockWithButton(props) {
       >
         Главная
       </Button>
+
+      <Button
+         onClick={() => navigate(`/profile`)}
+         sx={{ my: 2, color: 'white', display: 'block' }}
+       >
+         Профиль
+       </Button>
     </Box>
   );
 }

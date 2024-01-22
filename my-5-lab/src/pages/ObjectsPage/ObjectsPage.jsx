@@ -8,19 +8,26 @@ import { EditPopup } from '../../components/EditPopup/EditPopup';
 import { ButtonColor } from '../../components/Button/Button';
 import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLastBreadcrumb';
 import { create, getAll } from '../../api/allApi';
+import toast from 'react-hot-toast';
 
 export function ObjectsPage() {
   const [data, setData] = useState();
   const [showPopup, setShowPopup] = useState(false);
   const [targetElement, setTargetElement] = useState([]);
+  const [role, setRole] = useState("USER");
 
   useEffect(() => {
     loadData();
+    setRole(localStorage.getItem("role") || "USER");
   }, [])
 
   async function loadData() {
-    const data = await getAll();
-    setData(data);
+    try {
+      const data = await getAll();
+      setData(data);
+    } catch (error) {
+      toast.error("Ошибка сервера")
+    }
   }
 
   function openPopup(element) {
@@ -42,11 +49,10 @@ export function ObjectsPage() {
     }
 
     const data = await create(targetElement);
-    console.log(data);
-   // setTargetElement(data);
+    setTargetElement(data.services);
 
-   // await loadData()
-   // setShowPopup(true);
+    await loadData()
+    setShowPopup(true);
   }
 
   return (
@@ -60,7 +66,7 @@ export function ObjectsPage() {
           <ObjectsBlock key={element._id} objects={element.title} services={element.title} onClick={() => openPopup(element)} />
         )}
 
-        <ButtonColor value="Добавить" handleClick={() => addNewElement()} />
+        {role !== "USER" && <ButtonColor value="Добавить" handleClick={() => addNewElement()} />}
       </Content>
 
       <EditPopup open={showPopup} element={targetElement} closePopup={() => closePopup()} />

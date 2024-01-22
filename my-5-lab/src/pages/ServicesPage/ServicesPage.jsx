@@ -8,19 +8,26 @@ import { ButtonColor } from '../../components/Button/Button';
 import { EditPopup } from '../../components/EditPopup/EditPopup';
 import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLastBreadcrumb';
 import { create, getAll } from '../../api/allApi.js';
+import toast from 'react-hot-toast';
 
 export function ServicesPage() {
   const [data, setData] = useState()
   const [showPopup, setShowPopup] = useState(false);
   const [targetElement, setTargetElement] = useState([]);
+  const [role, setRole] = useState("USER");
 
    useEffect(() => {
     loadData();
+    setRole(localStorage.getItem("role") || "USER");
   }, [])
 
   async function loadData() {
-    const data = await getAll();
-    setData(data);
+    try {
+      const data = await getAll();
+      setData(data);
+    } catch (error) {
+      toast.error("Ошибка сервера")
+    }
   }
 
   function openPopup(element) {
@@ -34,19 +41,23 @@ export function ServicesPage() {
   }
 
   async function addNewElement() {
-    const targetElement = {
-      id: 4,
-      home: "default",
-      services: "default",
-      objects: "default"
+    try {
+      const targetElement = {
+        id: 4,
+        area: "default",
+        brigade: "default",
+        schedule: "default"
+      }
+
+      setTargetElement(targetElement);
+
+      await create(targetElement);
+
+      await loadData()
+      setShowPopup(true);
+    } catch (error) {
+      toast.error("Ошибка сервера")
     }
-
-    setTargetElement(targetElement);
-
-    await create(targetElement);
-
-    await loadData()
-    setShowPopup(true);
   }
 
   return (
@@ -60,7 +71,7 @@ export function ServicesPage() {
           <ServicesBlock key={element._id} services={element.title} onClick={() => openPopup(element)} />
         )}
 
-        <ButtonColor value="Добавить" handleClick={() => addNewElement()} />
+        {role !== "USER" && <ButtonColor value="Добавить" handleClick={() => addNewElement()} />}
       </Content>
 
       <EditPopup open={showPopup} element={targetElement} closePopup={() => closePopup()} />

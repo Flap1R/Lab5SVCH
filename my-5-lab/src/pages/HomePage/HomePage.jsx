@@ -9,21 +9,27 @@ import { ButtonColor } from '../../components/Button/Button';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLastBreadcrumb';
 import { create, getAll } from '../../api/allApi.js';
+import toast from 'react-hot-toast';
 
 export function HomePage() {  
   const [data, setData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [targetElement, setTargetElement] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [role, setRole] = useState("USER");
 
   useEffect(() => {
     loadData();
+    setRole(localStorage.getItem("role") || "USER");
   }, [])
 
   async function loadData() {
-    const data = await getAll();
-    console.log(data);
-    setData(data);
+    try {
+      const data = await getAll();
+      setData(data);
+    } catch (error) {
+      toast.error("Ошибка сервера")
+    }
   }
 
   function openPopup(element) {
@@ -37,19 +43,23 @@ export function HomePage() {
   }
 
   async function addNewElement() {
-    const targetElement = {
-      id: 4,
-      home: "default",
-      services: "default",
-      objects: "default"
+    try {
+      const targetElement = {
+        id: 4,
+        home: "default",
+        services: "default",
+        objects: "default"
+      }
+
+      const data = await create(targetElement);
+      setTargetElement(data.services);
+
+      await loadData()
+      setShowPopup(true);
+      setOpenSnackbar(true);
+    } catch (error) {
+      toast.error("Ошибка сервера")
     }
-
-    const data = await create(targetElement);
-    setTargetElement(data.serices);
-
-    await loadData()
-    setShowPopup(true);
-    setOpenSnackbar(true);
   }
 
   function createDocument() {
@@ -78,7 +88,7 @@ export function HomePage() {
           )
         }
 
-          <ButtonColor value="Добавить" handleClick={() => addNewElement()} />
+          {role !== "USER" && <ButtonColor value="Добавить" handleClick={() => addNewElement()} />}
          <div className='homePage__save__button'>
            <ButtonColor value="Скачать" handleClick={() => createDocument()} />
          </div>
