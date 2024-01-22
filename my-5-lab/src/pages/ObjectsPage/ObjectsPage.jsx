@@ -3,35 +3,37 @@ import './ObjectsPage.css';
 import { Head } from '../../components/Head/Head';
 import { Content } from '../../components/Content/Content';
 import { Footer } from '../../components/Footer/Footer';
-import jsonData from '../../data/data.json';
 import { ObjectsBlock } from '../../components/ObjectsBlock/ObjectsBlock';
 import { EditPopup } from '../../components/EditPopup/EditPopup';
 import { ButtonColor } from '../../components/Button/Button';
 import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLastBreadcrumb';
-import { setJsonData } from '../../data/actions';
-import { useSelector, useDispatch } from 'react-redux';
+import { create, getAll } from '../../api/allApi';
 
 export function ObjectsPage() {
+  const [data, setData] = useState();
   const [showPopup, setShowPopup] = useState(false);
   const [targetElement, setTargetElement] = useState([]);
 
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.jsonData);
-
   useEffect(() => {
-    dispatch(setJsonData(jsonData));
-  }, [dispatch]);
+    loadData();
+  }, [])
+
+  async function loadData() {
+    const data = await getAll();
+    setData(data);
+  }
 
   function openPopup(element) {
     setTargetElement(element);
     setShowPopup(true);
   }
 
-  function closePopup() {
+  async function closePopup() {
     setShowPopup(false);
+    await loadData();
   }
 
-  function addNewElement() {
+  async function addNewElement() {
     const targetElement = {
       id: 4,
       home: "default",
@@ -40,6 +42,10 @@ export function ObjectsPage() {
     }
 
     setTargetElement(targetElement);
+
+    await create(targetElement);
+
+    await loadData()
     setShowPopup(true);
   }
 
@@ -50,7 +56,7 @@ export function ObjectsPage() {
         <ActiveLastBreadcrumb targetPage="Объекты" />
         <div className='objectsPage__title'>Объекты</div>
 
-        {data.jsonData && data.jsonData.map(element =>
+        {data && data.map(element =>
           <ObjectsBlock key={element.id} objects={element.objects} services={element.services} onClick={() => openPopup(element)} />
         )}
 
