@@ -10,6 +10,9 @@ import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLastBreadcrumb';
 import { create, getAll } from '../../api/allApi.js';
 import toast from 'react-hot-toast';
+import 'blob-polyfill';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf'
 
 export function HomePage() {  
   const [data, setData] = useState([]);
@@ -75,6 +78,66 @@ export function HomePage() {
     document.body.removeChild(link);
   }
 
+  function createDocumentExcel() {
+    const transformedData = data.map(element => ({
+      services: element.title,
+      home: element.home.title,
+      objects: element.objects.title,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(transformedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'data.xlsx');
+  }
+
+  function createDocumentWord() {
+    const transformedData = data.map(element => ({
+      services: element.title,
+      home: element.home.title,
+      objects: element.objects.title,
+    }));
+
+    const tableRows = transformedData.map(row => [
+      row.services,
+      row.home,
+      row.objects,
+    ]);
+
+    const table = [
+      ['Services', 'Home', 'Objects'],
+      ...tableRows,
+    ];
+
+    const blob = new Blob([table.map(row => row.join('\t')).join('\n')], {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'document.docx';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast.success('Документ успешно создан');
+  }
+
+  function createDocumentPDF() {
+    const doc = new jsPDF();
+    doc.text('Services  |  Home  |  Objects', 20, 10);
+
+    if (data && data.length > 0) {
+      data.forEach((element, index) => {
+        const row = `${element.title}  |  ${element.home.title}  |  ${element.objects.title}`;
+        doc.text(row, 20, 10 + (index + 1) * 10);
+      });
+    }
+
+    doc.save('document.pdf');
+  }
+
   return (
     <>
       <Head />
@@ -91,6 +154,15 @@ export function HomePage() {
           {role !== "USER" && <ButtonColor value="Добавить" handleClick={() => addNewElement()} />}
          <div className='homePage__save__button'>
            <ButtonColor value="Скачать" handleClick={() => createDocument()} />
+         </div>
+         <div className='areaPage__save__button'>
+           <ButtonColor value="Скачать Excel" handleClick={() => createDocumentExcel()} />
+         </div>
+         <div className='areaPage__save__button'>
+           <ButtonColor value="Скачать Word" handleClick={() => createDocumentWord()} />
+         </div>
+         <div className='areaPage__save__button'>
+           <ButtonColor value="Скачать PDF" handleClick={() => createDocumentPDF()} />
          </div>
       </Content>
 

@@ -13,7 +13,6 @@ export function EditPopup(props) {
 
   useEffect(() => {
     if (props.element) {
-      console.log(props.element);
        setHome(props.element.home ? props.element.home.title : " ");
        setServices(props.element.title || " ");
        setObjects(props.element.objects ? props.element.objects.title : " ");
@@ -25,7 +24,7 @@ export function EditPopup(props) {
       console.error("Неверный элемент или отсутствует свойство _id");
       return;
     }
-    
+
     const newElement = {
       _id: props.element._id,
       title: services,
