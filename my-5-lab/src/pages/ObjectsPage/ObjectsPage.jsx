@@ -41,12 +41,12 @@ export function ObjectsPage() {
       objects: "default"
     }
 
-    setTargetElement(targetElement);
+    const data = await create(targetElement);
+    console.log(data);
+   // setTargetElement(data);
 
-    await create(targetElement);
-
-    await loadData()
-    setShowPopup(true);
+   // await loadData()
+   // setShowPopup(true);
   }
 
   return (
@@ -57,7 +57,7 @@ export function ObjectsPage() {
         <div className='objectsPage__title'>Объекты</div>
 
         {data && data.map(element =>
-          <ObjectsBlock key={element.id} objects={element.objects} services={element.services} onClick={() => openPopup(element)} />
+          <ObjectsBlock key={element._id} objects={element.title} services={element.title} onClick={() => openPopup(element)} />
         )}
 
         <ButtonColor value="Добавить" handleClick={() => addNewElement()} />

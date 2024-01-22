@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
+const Services = require('../models/Services');
+const Home = require('../models/Home');
+const Objects = require('../models/Objects');
 
 class allController {
     async getAll(req, res) {
         try {
-            const rawData = fs.readFileSync('../server/data/data.json');
-            const jsonData = JSON.parse(rawData);
+            const data = await Services.find().populate('home').populate('objects');
 
-            return res.json({ data: jsonData, message: "Success" });
+            return res.json({ data: data, message: "Success" });
         } catch (error) {
             console.log(error);
             return res.status(400).json({ message: "Error" });
@@ -16,18 +16,30 @@ class allController {
 
     async create(req, res) {
         try {
-            const newElement = req.body.element;
-            const uniqueId = Date.now();
+            const element = req.body.element;
 
-            newElement.id = uniqueId;
+            const home = new Home ({
+                title: element.home
+            });
 
-            const rawData = fs.readFileSync(path.join(__dirname, '../data/data.json'));
-            const jsonData = JSON.parse(rawData);
+            await home.save();
 
-            jsonData.push(newElement);
+            const objects = new Objects ({
+                title: element.objects
+            })
 
-            fs.writeFileSync(path.join(__dirname, '../data/data.json'), JSON.stringify(jsonData, null, 2));
-            return res.json({ message: "Success" });
+            await objects.save();
+
+            const services = new Services({
+                title: element.services,
+                home: home._id,
+                objects: objects._id
+            })
+
+            await services.save();
+
+            const createdServices = await Services.findById(services._id).populate('home objects');
+            return res.json({ services: createdServices, message: "Success" });
         } catch (error) {
             console.log(error);
             return res.status(400).json({ message: "Error" });
@@ -37,19 +49,14 @@ class allController {
     async update(req, res) {
         try {
             const newElement = req.body.element;
-            const id = newElement.id;
+            const id = newElement._id;
 
-            const rawData = fs.readFileSync(path.join(__dirname, '../data/data.json'));
-            let jsonData = JSON.parse(rawData);
+            await Home.findByIdAndUpdate(newElement.home._id, newElement.home)
+            await Objects.findByIdAndUpdate(newElement.objects._id, newElement.objects)
 
-            const index = jsonData.findIndex(element => element.id === id);
-            if (index !== -1) {
-                jsonData[index] = newElement;
+            await Services.findByIdAndUpdate(id, newElement)
 
-                fs.writeFileSync(path.join(__dirname, '../data/data.json'), JSON.stringify(jsonData, null, 2));
-
-                return res.json({ message: "Success" });
-            }
+            return res.json({ message: "Success" });
         } catch (error) {
             console.log(error);
             return res.status(400).json({ message: "Error" });
@@ -60,18 +67,8 @@ class allController {
         try {
             const id = req.params.id;
 
-            const rawData = fs.readFileSync(path.join(__dirname, '../data/data.json'));
-            let jsonData = JSON.parse(rawData);
-
-            const indexToDelete = jsonData.findIndex(element => element.id === Number(id));
-            
-            console.log(indexToDelete)
-            if (indexToDelete !== -1) {
-                jsonData.splice(indexToDelete, 1);
-    
-                fs.writeFileSync(path.join(__dirname, '../data/data.json'), JSON.stringify(jsonData, null, 2));
-                return res.json({ message: "Success" });
-            }
+            await Services.findByIdAndDelete(id);
+            return res.json({ message: "Success" });
         } catch (error) {
             console.log(error);
             return res.status(400).json({ message: "Error" });
@@ -79,4 +76,4 @@ class allController {
     }
 }
 
-module.exports = allController;
+module.exports = allController

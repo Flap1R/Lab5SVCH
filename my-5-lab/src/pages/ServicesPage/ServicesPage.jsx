@@ -57,7 +57,7 @@ export function ServicesPage() {
         <div className='servicesPage__title'>Услуги</div>
 
         {data && data.map(element =>
-          <ServicesBlock key={element.id} services={element.services} onClick={() => openPopup(element)} />
+          <ServicesBlock key={element._id} services={element.title} onClick={() => openPopup(element)} />
         )}
 
         <ButtonColor value="Добавить" handleClick={() => addNewElement()} />

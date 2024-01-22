@@ -11,7 +11,7 @@ import ActiveLastBreadcrumb from '../../components/ActiveLastBreadcrumb/ActiveLa
 import { create, getAll } from '../../api/allApi.js';
 
 export function HomePage() {  
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [targetElement, setTargetElement] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -22,6 +22,7 @@ export function HomePage() {
 
   async function loadData() {
     const data = await getAll();
+    console.log(data);
     setData(data);
   }
 
@@ -43,9 +44,8 @@ export function HomePage() {
       objects: "default"
     }
 
-    setTargetElement(targetElement);
-
-    await create(targetElement);
+    const data = await create(targetElement);
+    setTargetElement(data.serices);
 
     await loadData()
     setShowPopup(true);
@@ -69,22 +69,23 @@ export function HomePage() {
     <>
       <Head />
       <Content>
-        <ActiveLastBreadcrumb targetPage="Главная"/>
+        <ActiveLastBreadcrumb targetPage="Главная" />
         <div className='homePage__title'>Компании и услуги</div>
         {
-          data != undefined && data.map(element =>
-            <HomeBlock key={element.id} element={element} onClick={() => openPopup(element)} />
+          data && data.map(element =>
+            <HomeBlock key={element._id} home={element.home.title} services=
+            {element.title} onClick={() => openPopup(element)} />
           )
         }
 
-          <ButtonColor value="Добавить" handleClick={() => addNewElement()}/>
+          <ButtonColor value="Добавить" handleClick={() => addNewElement()} />
          <div className='homePage__save__button'>
-           <ButtonColor value="Скачать" handleClick={() => createDocument()}/>
+           <ButtonColor value="Скачать" handleClick={() => createDocument()} />
          </div>
       </Content>
 
-      <EditPopup open={showPopup} element={targetElement} closePopup={() => closePopup()}/>
-      <SimpleSnackbar open={openSnackbar} setOpen={() => setOpenSnackbar(false)} text="Элемент добавлен"/>
+      <EditPopup open={showPopup} element={targetElement} closePopup={() => closePopup()} />
+      <SimpleSnackbar open={openSnackbar} setOpen={() => setOpenSnackbar(false)} text="Элемент добавлен" />
       <Footer />
     </>
   );

@@ -13,22 +13,33 @@ export function EditPopup(props) {
 
   useEffect(() => {
     if (props.element) {
-      setHome(props.element.home);
-      setServices(props.element.services);
-      setObjects(props.element.objects)
-    }
-  }, [props.element])
+      console.log(props.element);
+       setHome(props.element.home ? props.element.home.title : " ");
+       setServices(props.element.title || " ");
+       setObjects(props.element.objects ? props.element.objects.title : " ");
+     }
+   }, [props.element]);  
 
   async function saveElement() {
+    if (!props.element || !props.element._id) {
+      console.error("Неверный элемент или отсутствует свойство _id");
+      return;
+    }
+    
     const newElement = {
-      id: props.element.id,
-      services: services,
-      objects: objects,
-      home: home
+      _id: props.element._id,
+      title: services,
+      objects: {
+        _id: props.element.objects._id,
+        title: objects
+      },
+      home: {
+        _id: props.element.home._id,
+        title: home
+      }
     };
 
     await update(newElement);
-
     closeElement();
   }
 
@@ -37,9 +48,7 @@ export function EditPopup(props) {
   }
 
    async function deleteOneElement() {
-     console.log(props.element.id)
-     
-     await deleteElement(props.element.id);
+    await deleteElement(props.element._id);
   }
 
   return (
